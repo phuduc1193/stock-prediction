@@ -11,7 +11,7 @@ class Company(models.Model):
         ordering = ['id']
 
     name = models.CharField(max_length=100)
-    stock_symbol = models.CharField(max_length=10)
+    symbol = models.CharField(max_length=10)
     sector = models.ForeignKey(StockSector, blank=True, null=True, on_delete=models.CASCADE)
 
 class StockPrice(models.Model):

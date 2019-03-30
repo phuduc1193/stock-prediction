@@ -1,6 +1,9 @@
 from rest_framework import viewsets, generics
+from rest_framework.exceptions import NotFound
+from rest_framework.response import Response
 from main.data_storage.models import Company, StockPrice, StockSector
 from main.data_storage.serializers import CompanySerializer, StockPriceSerializer, StockSectorSerializer
+from django.shortcuts import get_object_or_404
 
 # Create your views here.
 class CompanyViewSet(viewsets.ModelViewSet):
@@ -17,14 +20,18 @@ class StockSectorViewSet(viewsets.ModelViewSet):
     queryset = StockSector.objects.all()
     serializer_class = StockSectorSerializer
 
-class StockPriceList(generics.ListAPIView):
+class StockPriceViewSet(viewsets.ModelViewSet):
+    """
+    API endpoint that allows stock prices to be viewed or edited.
+    """
+    queryset = StockPrice.objects.all()
     serializer_class = StockPriceSerializer
 
     def get_queryset(self):
         """
-        This view should return a list of all the stock prices
-        for the stock symbol.
         """
-        symbol = self.kwargs['symbol']
-        company = Company.objects.get(stock_symbol=symbol)
-        return StockPrice.objects.filter(company=company)
+        symbol = self.request.query_params.get('symbol', None)
+        if symbol is not None:
+            company = get_object_or_404(Company, symbol=symbol)
+            self.queryset = self.queryset.filter(company=company)
+        return self.queryset

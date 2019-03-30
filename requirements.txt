@@ -1,8 +1,9 @@
-Django
+django
 psycopg2-binary
-Djangorestframework
-# Tensorflow
-# Keras
-# Numpy
-# Scipy
-# Sklearn
+djangorestframework
+django-filter
+# tensorflow
+# keras
+# numpy
+# scipy
+# sklearn
