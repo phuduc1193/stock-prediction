@@ -15,8 +15,8 @@ class Migration(migrations.Migration):
             name='StockModel',
             fields=[
                 ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('model_location', models.CharField(max_length=100)),
-                ('scaler_location', models.CharField(max_length=100)),
+                ('model_name', models.CharField(max_length=100)),
+                ('scaler_name', models.CharField(max_length=100)),
                 ('modified_at', models.DateTimeField(auto_now=True)),
                 ('created_at', models.DateTimeField(auto_now_add=True)),
             ],

@@ -2,8 +2,8 @@ django
 psycopg2-binary
 djangorestframework
 django-filter
-# tensorflow
-# keras
-# numpy
-# scipy
-# sklearn
+tensorflow
+numpy
+pandas
+scipy
+sklearn

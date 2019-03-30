@@ -1,7 +1,7 @@
 #!/bin/bash
 
-echo "Collect static files"
-python manage.py collectstatic --noinput
+# echo "Collect static files"
+# python manage.py collectstatic --noinput
 
 
 echo "Add database migrations"
