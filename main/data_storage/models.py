@@ -12,6 +12,7 @@ class Company(models.Model):
 
     name = models.CharField(max_length=100)
     symbol = models.CharField(max_length=10)
+    description = models.TextField(blank=True, null=True)
     sector = models.ForeignKey(StockSector, blank=True, null=True, on_delete=models.CASCADE)
 
 class StockPrice(models.Model):

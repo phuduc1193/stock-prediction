@@ -27,7 +27,6 @@ def run_seed(self, mode):
 
     # Seed data
     create_stock_sectors()
-    create_top_companies()
 
 def clear_data():
     """Deletes all the table data"""
@@ -35,27 +34,7 @@ def clear_data():
 
 def create_stock_sectors():
     """Creates stock sectors"""
-    names = ["Energy", "Materials", "Industrials", "Consumer Discretionary", "Consumer Staples", "Health Care", "Financials", "Information Technology", "Telecommunication Services", "Utilities", "Real Estate"]
+    names = ['Communication Services', 'Consumer Discretionary', 'Consumer Staples', 'Energy', 'Financials', 'Health Care', 'Industrials', 'Information Technology', 'Materials', 'Real Estate', 'Utilities']
     for index, name in enumerate(names, start=1):
         sector = StockSector(id=index, name=name)
         sector.save()
-
-def create_top_companies():
-    sector_healthcare = StockSector.objects.get(name="Health Care")
-    sector_tech = StockSector.objects.get(name="Information Technology")
-    sector_fin = StockSector.objects.get(name="Financials")
-
-    tndm = Company(id=1, name="Tandem Diabetes Care, Inc.", symbol="TNDM", sector=sector_healthcare)
-    tndm.save()
-
-    nvta = Company(id=2, name="Invitae Corporation", symbol="NVTA", sector=sector_healthcare)
-    nvta.save()
-
-    ins = Company(id=3, name="Intelligent Systems Corporation", symbol="INS", sector=sector_tech)
-    ins.save()
-
-    tpnl = Company(id=4, name="3Pea Intl Inc", symbol="TPNL", sector=sector_tech)
-    tpnl.save()
-
-    cme = Company(id=5, name="CME Group Inc.", symbol="CME", sector=sector_fin)
-    cme.save()
