@@ -36,5 +36,6 @@ def create_stock_sectors():
     """Creates stock sectors"""
     names = ['Communication Services', 'Consumer Discretionary', 'Consumer Staples', 'Energy', 'Financials', 'Health Care', 'Industrials', 'Information Technology', 'Materials', 'Real Estate', 'Utilities']
     for index, name in enumerate(names, start=1):
-        sector = StockSector(id=index, name=name)
+        slug = name.replace(" ", "-").lower()
+        sector = StockSector(id=index, name=name, slug=slug)
         sector.save()

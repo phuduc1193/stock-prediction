@@ -3,16 +3,19 @@ from django.db import models
 # Create your models here.
 class StockSector(models.Model):
     class Meta:
-        ordering = ['id']
+        ordering = ['name']
     name = models.CharField(max_length=50)
+    slug = models.CharField(max_length=50)
 
 class Company(models.Model):
     class Meta:
-        ordering = ['id']
+        ordering = ['name']
 
     name = models.CharField(max_length=100)
-    symbol = models.CharField(max_length=10)
+    symbol = models.CharField(max_length=10, unique=True)
     description = models.TextField(blank=True, null=True)
+    website = models.CharField(max_length=50)
+    ceo = models.CharField(max_length=100)
     sector = models.ForeignKey(StockSector, blank=True, null=True, on_delete=models.CASCADE)
 
 class StockPrice(models.Model):

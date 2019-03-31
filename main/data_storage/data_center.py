@@ -26,7 +26,7 @@ class DataCenter:
             data = r.json()
             data = pd.DataFrame.from_dict(data, orient='columns').head(1)
             sector = StockSector.objects.get(name__icontains=str(data['sector'].values[0]))
-            company = Company(name=data['companyName'].values[0], symbol=data['symbol'].values[0], description=data['description'].values[0], sector=sector)
+            company = Company(name=data['companyName'].values[0], symbol=data['symbol'].values[0], description=data['description'].values[0], website=data['website'].values[0], ceo=data['CEO'].values[0], sector=sector)
             return company
         except Exception as err:
             return None
