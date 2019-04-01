@@ -12,23 +12,23 @@ class DataCenter:
 
     def get_intraday(self, interval='15min', outputsize='compact'):
         df, meta_data = self.ts.get_intraday(symbol=self.symbol, interval=interval, outputsize=outputsize)
-        return alter_data(df)
+        return self.alter_data(df)
 
     def get_daily(self, outputsize='compact'):
-        df, meta_data = self.ts.get_daily_adjusted(symbol=self.symbol, outputsize=outputsize)
-        return alter_data(df)
+        df, meta_data = self.ts.get_daily(symbol=self.symbol, outputsize=outputsize)
+        return self.alter_data(df)
 
     def get_weekly(self):
-        df, meta_data = self.ts.get_weekly_adjusted(symbol=self.symbol)
-        return alter_data(df)
+        df, meta_data = self.ts.get_weekly(symbol=self.symbol)
+        return self.alter_data(df)
 
     def get_monthly(self):
-        df, meta_data = self.ts.get_monthly_adjusted(symbol=self.symbol)
-        return alter_data(df)
+        df, meta_data = self.ts.get_monthly(symbol=self.symbol)
+        return self.alter_data(df)
 
     def get_latest(self):
         df, meta_data = self.ts.get_batch_stock_quotes(symbols=[self.symbol])
-        return alter_data(df)
+        return self.alter_data(df)
         
     def get_company(self):
         try:
@@ -39,7 +39,7 @@ class DataCenter:
         except Exception as err:
             return None
     
-    def alter_data(df):
+    def alter_data(self, df):
         df['timestamp'] = pd.to_datetime(df.index.values)
         df.columns = ['open', 'high', 'low', 'close', 'volume', 'timestamp']
         df['volume'] = pd.to_numeric(df['volume'], downcast='integer')

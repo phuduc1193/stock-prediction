@@ -28,6 +28,30 @@ class CompanyViewSet(ReadOnlyModelViewSet):
             instance = load_company(symbol)
         serializer = self.get_serializer(instance)
         return Response(serializer.data)
+
+    @action(detail=True, methods=['get'], url_path='stock-prices')
+    def stock_prices(self, request, symbol=None, *args, **kwargs):
+        if symbol is None:
+            raise Http404()
+        symbol = symbol.upper()
+        
+        try:
+            company = Company.objects.get(symbol=symbol)
+        except Exception:
+            company = load_company(symbol)
+
+        instances = StockPrice.objects.all().filter(company=company)
+        if not instances:
+            instances = load_stock_prices(company)
+
+        page = self.paginate_queryset(instances)
+        if page is not None:
+            serializer = StockPriceSerializer(page, many=True, *args, **kwargs)
+            return self.get_paginated_response(serializer.data)
+
+        serializer = StockPriceSerializer(instances, many=True, *args, **kwargs)
+        return Response(serializer.data)
+
     
 class StockSectorViewSet(ReadOnlyModelViewSet):
     """
@@ -73,6 +97,7 @@ def load_stock_prices(company):
     symbol = company.symbol
     dc = DataCenter(symbol=symbol)
     df = dc.get_intraday(outputsize='full')
+    df.append(dc.get_daily())
     stored_data = StockPrice.objects.all().filter(company=company)
     list_existed_timestamp = [pd.Timestamp(o.timestamp) for o in stored_data]
     df = df[~df.timestamp.isin(list_existed_timestamp)]
