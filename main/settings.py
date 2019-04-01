@@ -129,8 +129,7 @@ STATIC_ROOT = os.path.join(BASE_DIR, 'static')
 MODEL_ROOT = os.path.join(BASE_DIR, 'models')
 
 REST_FRAMEWORK = {
-    'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.PageNumberPagination',
-    'PAGE_SIZE': 10,
+    'DEFAULT_PAGINATION_CLASS': 'main.data_storage.paginations.StandardResultsSetPagination',
     'DEFAULT_RENDERER_CLASSES': (
         'rest_framework.renderers.JSONRenderer',
     ),

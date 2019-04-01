@@ -5,6 +5,7 @@ from rest_framework.decorators import action
 from main.data_storage.models import Company, StockPrice, StockSector
 from main.data_storage.serializers import CompanySerializer, StockPriceSerializer, StockSectorSerializer
 from main.data_storage.data_center import DataCenter
+from main.data_storage.paginations import LargeResultsSetPagination
 
 import pandas as pd
 
@@ -21,11 +22,8 @@ class CompanyViewSet(ReadOnlyModelViewSet):
         symbol = kwargs.get('symbol', None)
         if symbol is None:
             raise Http404()
-        symbol = symbol.upper()
-        try:
-            instance = Company.objects.get(symbol=symbol)
-        except Exception:
-            instance = load_company(symbol)
+
+        instance = load_company(symbol)
         serializer = self.get_serializer(instance)
         return Response(serializer.data)
 
@@ -33,17 +31,14 @@ class CompanyViewSet(ReadOnlyModelViewSet):
     def stock_prices(self, request, symbol=None, *args, **kwargs):
         if symbol is None:
             raise Http404()
-        symbol = symbol.upper()
-        
-        try:
-            company = Company.objects.get(symbol=symbol)
-        except Exception:
-            company = load_company(symbol)
+
+        company = load_company(symbol)
 
         instances = StockPrice.objects.all().filter(company=company)
         if not instances:
             instances = load_stock_prices(company)
 
+        self.pagination_class = LargeResultsSetPagination
         page = self.paginate_queryset(instances)
         if page is not None:
             serializer = StockPriceSerializer(page, many=True, *args, **kwargs)
@@ -67,21 +62,25 @@ class StockPriceViewSet(ReadOnlyModelViewSet):
     """
     queryset = StockPrice.objects.all()
     serializer_class = StockPriceSerializer
+    pagination_class = LargeResultsSetPagination
 
     def get_queryset(self):
         symbol = self.request.query_params.get('symbol', None)
-        if symbol is not None:
-            symbol = symbol.upper()
-            try:
-                company = Company.objects.get(symbol=symbol)
-            except Exception:
-                company = load_company(symbol)
+        if symbol is None:
+            return self.queryset
 
-            load_stock_prices(company)
-            self.queryset = self.queryset.filter(company=company)
+        company = load_company(symbol)
+        load_stock_prices(company)
+        self.queryset = self.queryset.filter(company=company)
         return self.queryset
 
 def load_company(symbol):
+    symbol = symbol.upper()
+    try:
+        return Company.objects.get(symbol=symbol)
+    except Exception:
+        pass
+
     df = DataCenter(symbol=symbol).get_company()
     if df is None:
         raise Http404()

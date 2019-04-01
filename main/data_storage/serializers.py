@@ -4,12 +4,13 @@ from main.data_storage.models import Company, StockPrice, StockSector
 class CompanySerializer(serializers.HyperlinkedModelSerializer):
     sector = serializers.ReadOnlyField(source='sector.name')
     CEO = serializers.ReadOnlyField(source='ceo')
-    
+    stock_price_url =  serializers.HyperlinkedIdentityField(view_name='company-stock-prices', lookup_field='symbol')
+
     class Meta:
         model = Company
-        fields = ('url', 'name', 'symbol', 'sector', 'website', 'CEO', 'description')
+        fields = ('url', 'name', 'symbol', 'sector', 'website', 'CEO', 'description', 'stock_price_url')
         extra_kwargs = {
-            'url': {'lookup_field': 'symbol'}
+            'url': {'lookup_field': 'symbol'},
         }
         read_only_fields = ('id', 'sector')
 
