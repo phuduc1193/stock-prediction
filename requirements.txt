@@ -8,3 +8,4 @@ pandas
 scipy
 sklearn
 alpha_vantage
+keras

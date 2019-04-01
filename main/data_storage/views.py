@@ -39,6 +39,7 @@ class CompanyViewSet(ReadOnlyModelViewSet):
             instances = load_stock_prices(company)
 
         self.pagination_class = LargeResultsSetPagination
+        self.ordering_fields = ('-timestamp')
         page = self.paginate_queryset(instances)
         if page is not None:
             serializer = StockPriceSerializer(page, many=True, *args, **kwargs)
@@ -95,8 +96,7 @@ def load_company(symbol):
 def load_stock_prices(company):
     symbol = company.symbol
     dc = DataCenter(symbol=symbol)
-    df = dc.get_intraday(outputsize='full')
-    df.append(dc.get_daily())
+    df = dc.get_daily(outputsize='full')
     stored_data = StockPrice.objects.all().filter(company=company)
     list_existed_timestamp = [pd.Timestamp(o.timestamp) for o in stored_data]
     df = df[~df.timestamp.isin(list_existed_timestamp)]
