@@ -15,19 +15,15 @@ class DataCenter:
         return self.alter_data(df)
 
     def get_daily(self, outputsize='compact'):
-        df, meta_data = self.ts.get_daily(symbol=self.symbol, outputsize=outputsize)
+        df, meta_data = self.ts.get_daily_adjusted(symbol=self.symbol, outputsize=outputsize)
         return self.alter_data(df)
 
     def get_weekly(self):
-        df, meta_data = self.ts.get_weekly(symbol=self.symbol)
+        df, meta_data = self.ts.get_weekly_adjusted(symbol=self.symbol)
         return self.alter_data(df)
 
     def get_monthly(self):
-        df, meta_data = self.ts.get_monthly(symbol=self.symbol)
-        return self.alter_data(df)
-
-    def get_latest(self):
-        df, meta_data = self.ts.get_batch_stock_quotes(symbols=[self.symbol])
+        df, meta_data = self.ts.get_monthly_adjusted(symbol=self.symbol)
         return self.alter_data(df)
         
     def get_company(self):
@@ -40,7 +36,8 @@ class DataCenter:
             return None
     
     def alter_data(self, df):
-        df['timestamp'] = pd.to_datetime(df.index.values)
-        df.columns = ['open', 'high', 'low', 'close', 'volume', 'timestamp']
-        df['volume'] = pd.to_numeric(df['volume'], downcast='integer')
+        df.columns = ['Open', 'High', 'Low', 'Close', 'Adj. Close', 'Volume', 'Dividend', 'Split Coefficient']
+        df['Date'] = pd.to_datetime(df.index.values)
+        df['Volume'] = pd.to_numeric(df['Volume'], downcast='integer')
+        df['Adj. Open'] = df['Open'] - df['Dividend']
         return df

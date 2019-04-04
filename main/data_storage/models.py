@@ -20,8 +20,8 @@ class Company(models.Model):
 
 class StockPrice(models.Model):
     class Meta:
-        ordering = ['company', '-timestamp']
-        unique_together = ('company', 'timestamp')
+        ordering = ['company', '-date']
+        unique_together = ('company', 'date')
 
     company = models.ForeignKey(Company, on_delete=models.CASCADE)
     high = models.DecimalField(max_digits=15, decimal_places=4)
@@ -29,4 +29,4 @@ class StockPrice(models.Model):
     open = models.DecimalField(max_digits=15, decimal_places=4)
     close = models.DecimalField(max_digits=15, decimal_places=4)
     volume = models.IntegerField()
-    timestamp = models.DateTimeField()
+    date = models.DateTimeField()

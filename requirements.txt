@@ -9,3 +9,7 @@ scipy
 sklearn
 alpha_vantage
 keras
+pystan
+fbprophet
+pytrends
+quandl
