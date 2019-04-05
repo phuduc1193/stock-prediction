@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from main.data_storage.models import Company, StockPrice, StockSector
+from main.app.models import Company, StockPrice, StockSector
 
 class CompanySerializer(serializers.HyperlinkedModelSerializer):
     sector = serializers.ReadOnlyField(source='sector.name')

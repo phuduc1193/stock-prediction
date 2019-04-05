@@ -1,6 +1,5 @@
 # Quandl for financial analysis, pandas and numpy for data manipulation
 # fbprophet for additive models, #pytrends for Google trend data
-import quandl
 import pandas as pd
 import numpy as np
 import fbprophet
@@ -12,7 +11,7 @@ import matplotlib.pyplot as plt
 
 import matplotlib
 
-from main.data_storage.data_center import DataCenter
+from main.app.datacenter import DataCenter
 
 # Class for analyzing and (attempting) to predict future prices
 # Contains a number of visualizations and analysis methods

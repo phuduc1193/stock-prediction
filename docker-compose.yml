@@ -3,12 +3,18 @@ version: '3'
 services:
   db:
     image: postgres
-  web:
-    build: .
-    entrypoint: ./docker-entrypoint.sh
+  api:
+    build: ./api
+    entrypoint: /code/docker-entrypoint.sh
     volumes:
-      - .:/code
+      - ./api:/code
     ports:
       - "8000:8000"
     depends_on:
       - db
+  web:
+    build: ./web
+    ports:
+      - "8080:80"
+    depends_on:
+      - api

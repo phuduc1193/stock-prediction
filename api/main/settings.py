@@ -38,8 +38,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'rest_framework',
-    'main.ml_model',
-    'main.data_storage',
+    'main.app',
 ]
 
 MIDDLEWARE = [
@@ -129,7 +128,7 @@ STATIC_ROOT = os.path.join(BASE_DIR, 'static')
 MODEL_ROOT = os.path.join(BASE_DIR, 'models')
 
 REST_FRAMEWORK = {
-    'DEFAULT_PAGINATION_CLASS': 'main.data_storage.paginations.StandardResultsSetPagination',
+    'DEFAULT_PAGINATION_CLASS': 'main.app.paginations.StandardResultsSetPagination',
     'DEFAULT_RENDERER_CLASSES': (
         'rest_framework.renderers.JSONRenderer',
     ),

@@ -2,9 +2,9 @@ django
 psycopg2-binary
 djangorestframework
 django-filter
-tensorflow
 numpy
 pandas
-scipy
-sklearn
+matplotlib
+pytrends
+fbprophet
 alpha_vantage

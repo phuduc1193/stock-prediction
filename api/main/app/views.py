@@ -2,10 +2,10 @@ from django.http import Http404
 from rest_framework.viewsets import ReadOnlyModelViewSet
 from rest_framework.response import Response
 from rest_framework.decorators import action
-from main.data_storage.models import Company, StockPrice, StockSector
-from main.data_storage.serializers import CompanySerializer, StockPriceSerializer, StockSectorSerializer
-from main.data_storage.data_center import DataCenter
-from main.data_storage.paginations import LargeResultsSetPagination
+from main.app.models import Company, StockPrice, StockSector
+from main.app.serializers import CompanySerializer, StockPriceSerializer, StockSectorSerializer
+from main.app.datacenter import DataCenter
+from main.app.paginations import LargeResultsSetPagination
 
 import pandas as pd
 

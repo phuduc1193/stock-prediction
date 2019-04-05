@@ -1,5 +1,5 @@
 from django.core.management.base import BaseCommand
-from main.data_storage.models import StockSector, Company
+from main.app.models import StockSector, Company
 
 MODE_CLEAR = 'clear'
 
