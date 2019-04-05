@@ -20,7 +20,7 @@ class StockPriceSerializer(serializers.HyperlinkedModelSerializer):
 
     class Meta:
         model = StockPrice
-        fields = ('company', 'symbol', 'open', 'close', 'high', 'low', 'volume', 'date')
+        fields = ('company', 'symbol', 'open', 'close', 'high', 'low', 'date')
         read_only_fields = ('id', 'company','symbol', 'date')
 
 class StockSectorSerializer(serializers.HyperlinkedModelSerializer):
