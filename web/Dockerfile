@@ -1,10 +1,9 @@
-# build stage
-FROM node:lts-alpine as build-stage
+FROM tarampampam/node:alpine as build-stage
 WORKDIR /app
 COPY package*.json ./
 RUN npm install
 COPY . .
-RUN npm run build
+RUN npm run build:prod
 
 # production stage
 FROM nginx:stable-alpine as production-stage
