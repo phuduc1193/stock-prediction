@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from main.app.models import Company, StockPrice, StockSector
+from main.app.models import Company, StockPrice, StockSector, StockPrediction
 
 class CompanySerializer(serializers.HyperlinkedModelSerializer):
     sector = serializers.ReadOnlyField(source='sector.name')
@@ -14,7 +14,7 @@ class CompanySerializer(serializers.HyperlinkedModelSerializer):
         }
         read_only_fields = ('id', 'sector')
 
-class StockPriceSerializer(serializers.HyperlinkedModelSerializer):
+class StockPriceSerializer(serializers.ModelSerializer):
     symbol = serializers.ReadOnlyField(source='company.symbol')
     company = serializers.ReadOnlyField(source='company.name')
 
@@ -30,3 +30,9 @@ class StockSectorSerializer(serializers.HyperlinkedModelSerializer):
         extra_kwargs = {
             'url': {'lookup_field': 'slug'}
         }
+    
+class StockPredictionSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = StockPrediction
+        fields = ('estimate', 'upper', 'lower')
+        read_only_fields = ('estimate', 'upper', 'lower')

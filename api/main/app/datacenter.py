@@ -4,6 +4,14 @@ from alpha_vantage.timeseries import TimeSeries
 
 API_KEY = '4Z8JT1P9O38F9PY7'
 
+
+def alter_data( df):
+    df.columns = ['Open', 'High', 'Low', 'Close', 'Adj. Close', 'Volume', 'Dividend', 'Split Coefficient']
+    df['Date'] = pd.to_datetime(df.index.values)
+    df['Volume'] = pd.to_numeric(df['Volume'], downcast='integer')
+    df['Adj. Open'] = df['Open'] - df['Dividend']
+    return df
+
 class DataCenter:
     def __init__(self, symbol):
         self.symbol = symbol
@@ -12,19 +20,21 @@ class DataCenter:
 
     def get_intraday(self, interval='15min', outputsize='compact'):
         df, meta_data = self.ts.get_intraday(symbol=self.symbol, interval=interval, outputsize=outputsize)
-        return self.alter_data(df)
+        df.columns = ['Open', 'High', 'Low', 'Close', 'Volume']
+        df['Date'] = pd.to_datetime(df.index.values)
+        return df
 
     def get_daily(self, outputsize='compact'):
         df, meta_data = self.ts.get_daily_adjusted(symbol=self.symbol, outputsize=outputsize)
-        return self.alter_data(df)
+        return alter_data(df)
 
     def get_weekly(self):
         df, meta_data = self.ts.get_weekly_adjusted(symbol=self.symbol)
-        return self.alter_data(df)
+        return alter_data(df)
 
     def get_monthly(self):
         df, meta_data = self.ts.get_monthly_adjusted(symbol=self.symbol)
-        return self.alter_data(df)
+        return alter_data(df)
         
     def get_company(self):
         try:
@@ -34,10 +44,3 @@ class DataCenter:
             return data
         except Exception as err:
             return None
-    
-    def alter_data(self, df):
-        df.columns = ['Open', 'High', 'Low', 'Close', 'Adj. Close', 'Volume', 'Dividend', 'Split Coefficient']
-        df['Date'] = pd.to_datetime(df.index.values)
-        df['Volume'] = pd.to_numeric(df['Volume'], downcast='integer')
-        df['Adj. Open'] = df['Open'] - df['Dividend']
-        return df

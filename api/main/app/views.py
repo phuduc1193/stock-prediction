@@ -2,10 +2,11 @@ from django.http import Http404
 from rest_framework.viewsets import ReadOnlyModelViewSet
 from rest_framework.response import Response
 from rest_framework.decorators import action
-from main.app.models import Company, StockPrice, StockSector
-from main.app.serializers import CompanySerializer, StockPriceSerializer, StockSectorSerializer
+from main.app.models import Company, StockPrice, StockSector, StockPrediction
+from main.app.serializers import CompanySerializer, StockPriceSerializer, StockSectorSerializer, StockPredictionSerializer
 from main.app.datacenter import DataCenter
 from main.app.paginations import LargeResultsSetPagination
+from main.app.stocker import Stocker
 
 import pandas as pd
 
@@ -22,6 +23,7 @@ class CompanyViewSet(ReadOnlyModelViewSet):
         symbol = kwargs.get('symbol', None)
         if symbol is None:
             raise Http404()
+        symbol = symbol.upper()
 
         instance = load_company(symbol)
         serializer = self.get_serializer(instance)
@@ -31,7 +33,8 @@ class CompanyViewSet(ReadOnlyModelViewSet):
     def stock_prices(self, request, symbol=None, *args, **kwargs):
         if symbol is None:
             raise Http404()
-
+        symbol = symbol.upper()
+        
         company = load_company(symbol)
 
         instances = StockPrice.objects.all().filter(company=company)
@@ -48,6 +51,29 @@ class CompanyViewSet(ReadOnlyModelViewSet):
         serializer = StockPriceSerializer(instances, many=True, *args, **kwargs)
         return Response(serializer.data)
 
+    @action(detail=True, methods=['get'])
+    def predict(self, request, symbol=None, *args, **kwargs):
+        if symbol is None:
+            raise Http404()
+        symbol = symbol.upper()
+
+        stocker = Stocker(symbol)
+        df = stocker.predict_future()
+        df = df.rename(columns={'Date': 'date'})
+        df['symbol'] = symbol
+        df = df[['symbol', 'estimate', 'upper', 'lower']]
+        instances = [StockPrediction(**kwargs) for kwargs in df.to_dict(orient='records')]
+
+        self.pagination_class = LargeResultsSetPagination
+        self.ordering_fields = ('-date')
+        page = self.paginate_queryset(instances)
+        if page is not None:
+            serializer = StockPredictionSerializer(page, many=True, *args, **kwargs)
+            return self.get_paginated_response(serializer.data)
+
+        serializer = StockPredictionSerializer(instances, many=True, *args, **kwargs)
+        print(serializer)
+        return Response(serializer.data)
     
 class StockSectorViewSet(ReadOnlyModelViewSet):
     """
@@ -76,7 +102,6 @@ class StockPriceViewSet(ReadOnlyModelViewSet):
         return self.queryset
 
 def load_company(symbol):
-    symbol = symbol.upper()
     try:
         return Company.objects.get(symbol=symbol)
     except Exception:

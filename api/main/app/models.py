@@ -30,3 +30,14 @@ class StockPrice(models.Model):
     close = models.DecimalField(max_digits=15, decimal_places=4)
     volume = models.IntegerField()
     date = models.DateTimeField()
+
+class StockPrediction(models.Model):
+    class Meta:
+        ordering = ['-date']
+        unique_together = ('symbol', 'date')
+    
+    symbol = models.CharField(max_length=10, unique=True)
+    upper = models.DecimalField(max_digits=15, decimal_places=4)
+    lower = models.DecimalField(max_digits=15, decimal_places=4)
+    estimate = models.DecimalField(max_digits=15, decimal_places=4)
+    date = models.DateTimeField()

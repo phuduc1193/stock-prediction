@@ -846,47 +846,9 @@ class Stocker():
         future['direction'] = (future['diff'] > 0) * 1
         
         # Rename the columns for presentation
-        future = future.rename(columns={'ds': 'Date', 'yhat': 'estimate', 'diff': 'change', 
+        future = future.rename(columns={'ds': 'date', 'yhat': 'estimate', 'diff': 'change', 
                                         'yhat_upper': 'upper', 'yhat_lower': 'lower'})
-        
-        future_increase = future[future['direction'] == 1]
-        future_decrease = future[future['direction'] == 0]
-        
-        # Print out the dates
-        print('\nPredicted Increase: \n')
-        print(future_increase[['Date', 'estimate', 'change', 'upper', 'lower']])
-        
-        print('\nPredicted Decrease: \n')
-        print(future_decrease[['Date', 'estimate', 'change', 'upper', 'lower']])
-        
-        self.reset_plot()
-        
-        # Set up plot
-        plt.style.use('fivethirtyeight')
-        matplotlib.rcParams['axes.labelsize'] = 10
-        matplotlib.rcParams['xtick.labelsize'] = 8
-        matplotlib.rcParams['ytick.labelsize'] = 8
-        matplotlib.rcParams['axes.titlesize'] = 12
-        
-        # Plot the predictions and indicate if increase or decrease
-        fig, ax = plt.subplots(1, 1, figsize=(8, 6))
-
-        # Plot the estimates
-        ax.plot(future_increase['Date'], future_increase['estimate'], 'g^', ms = 12, label = 'Pred. Increase')
-        ax.plot(future_decrease['Date'], future_decrease['estimate'], 'rv', ms = 12, label = 'Pred. Decrease')
-
-        # Plot errorbars
-        ax.errorbar(future['Date'].dt.to_pydatetime(), future['estimate'], 
-                    yerr = future['upper'] - future['lower'], 
-                    capthick=1.4, color = 'k',linewidth = 2,
-                   ecolor='darkblue', capsize = 4, elinewidth = 1, label = 'Pred with Range')
-
-        # Plot formatting
-        plt.legend(loc = 2, prop={'size': 10});
-        plt.xticks(rotation = '45')
-        plt.ylabel('Predicted Stock Price (US $)');
-        plt.xlabel('Date'); plt.title('Predictions for %s' % self.symbol);
-        plt.show()
+        return future
         
     def changepoint_prior_validation(self, start_date=None, end_date=None,changepoint_priors = [0.001, 0.05, 0.1, 0.2]):
 
